@@ -22,8 +22,9 @@ const cluster = rds.ServerlessCluster.fromServerlessClusterAttributes(rdsStack, 
 const rdsDs = backend.data.addRdsDataSource('rds', cluster, secret, 'postgres', { name: 'productInfo' })
 
 // set up bedrock
-const MODEL_ID = 'amazon.titan-embed-text-v2:0';
-const bedrockDataSource = backend.data.addHttpDataSource('BedrockDataSource', 'https://bedrock-runtime.us-east-1.amazonaws.com', {
+const EMBED_MODEL_ID = 'amazon.titan-embed-text-v2:0';
+const MODEL_ID = 'anthropic.claude-3-sonnet-20240229-v1:0';
+const bedrockDataSource = backend.data.addHttpDataSource('BedrockDataSource', 'https://bedrock-runtime.us-west-2.amazonaws.com', {
   authorizationConfig: { signingRegion: dataStack.region, signingServiceName: 'bedrock' },
 });
 
@@ -35,7 +36,39 @@ bedrockDataSource.grantPrincipal.addToPrincipalPolicy(
   }),
 );
 
-backend.data.resources.cfnResources.cfnGraphqlApi.environmentVariables = { MODEL_ID };
+bedrockDataSource.grantPrincipal.addToPrincipalPolicy(
+  new PolicyStatement({
+    effect: Effect.ALLOW,
+    actions: ['bedrock:InvokeModel'],
+    resources: [`arn:aws:bedrock:${dataStack.region}::foundation-model/${EMBED_MODEL_ID}`],
+  }),
+);
+
+backend.data.resources.cfnResources.cfnGraphqlApi.environmentVariables = { MODEL_ID, EMBED_MODEL_ID };
+
+backend.data.addResolver('addProduct', {
+  typeName: 'Mutation',
+  fieldName: 'addProduct',
+  runtime: FunctionRuntime.JS_1_0_0,
+  code: Code.fromInline(/*javascript*/ `
+    export const request = (ctx) => {}
+    export const response = (ctx) => ctx.prev.result
+  `),
+  pipelineConfig: [
+    backend.data.addFunction('generateProduct', {
+      name: 'generateProductFunction',
+      dataSource: bedrockDataSource,
+      code: Code.fromAsset('amplify/data/generateProduct.js'),
+      runtime: FunctionRuntime.JS_1_0_0,
+    }),
+    backend.data.addFunction('addProduct', {
+      name: 'addProductFn',
+      dataSource: rdsDs,
+      code: Code.fromAsset('amplify/data/addProduct.js'),
+      runtime: FunctionRuntime.JS_1_0_0,
+    }),
+  ],
+});
 
 backend.data.addResolver('search', {
   typeName: 'Query',

@@ -11,12 +11,6 @@ const schema = a.schema({
     rating: a.string(),
     rating_count: a.string(),
     about_product: a.string(),
-    related: a.ref('RelatedProduct').array(),
-  }),
-
-  RelatedProduct: a.customType({
-    product_id: a.string().required(),
-    product_name: a.string().required(),
   }),
 
   getProduct: a
@@ -31,6 +25,7 @@ const schema = a.schema({
       }),
     ),
   search: a.query().arguments({ query: a.string().required(), limit: a.integer() }).returns(a.ref('Product').array()),
+  addProduct: a.mutation().returns(a.ref('Product'))
 });
 
 export type Schema = ClientSchema<typeof schema>;
