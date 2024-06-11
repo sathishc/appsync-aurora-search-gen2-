@@ -25,7 +25,7 @@ const schema = a.schema({
       }),
     ),
   search: a.query().arguments({ query: a.string().required(), limit: a.integer() }).returns(a.ref('Product').array()),
-  addProduct: a.mutation().returns(a.ref('Product'))
+  addProduct: a.mutation().arguments({ query: a.string().required(), limit: a.integer() }).returns(a.ref('Product'))
 });
 
 export type Schema = ClientSchema<typeof schema>;

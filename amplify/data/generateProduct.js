@@ -7,6 +7,7 @@ import { util } from '@aws-appsync/utils';
  */
 export function request(ctx) {
   const { query } = ctx.args;
+  console.log("Model Ids ", ctx.env.MODEL_ID)
   return {
     resourcePath: `/model/${ctx.env.MODEL_ID}/invoke`,
     method: 'POST',

@@ -7,6 +7,7 @@ import { util } from '@aws-appsync/utils';
  * @returns {*} the request
  */
 export function request(ctx) {
+    console.log(" Context in addProduct",ctx.args)
     const { input: values } = ctx.args;
     const insertStatement = insert({ table: 'product_info', values });
     
