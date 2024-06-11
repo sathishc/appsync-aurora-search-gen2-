@@ -27,7 +27,7 @@ function App() {
   }, []);
 
   function search() {
-    client.queries.search(searchString)
+    client.queries.search({query:searchString})
   }
 
   async function addProduct() {
