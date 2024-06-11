@@ -9,7 +9,6 @@ const client = generateClient<Schema>();
 
 function App() {
   const [searchString, setSearchString] = useState("")
-  const [products, setProducts] = useState<Array<Schema["Product"]>>([]);
 
   const modelSchema = `Product{
     product_id: a.string().required(),
@@ -43,18 +42,7 @@ function App() {
     <main>
       <h1>My Products</h1>
       <button onClick={addProduct}>Add Product</button>
-      <ul>
-        {products.map((product) => (
-          <li key={product.id}>{product.content}</li>
-        ))}
-      </ul>
-      <div>
-        🥳 App successfully hosted. Try creating a new todo.
-        <br />
-        <a href="https://docs.amplify.aws/react/start/quickstart/#make-frontend-updates">
-          Review next step of this tutorial.
-        </a>
-      </div>
+    
     </main>
      )}
     </Authenticator>
