@@ -1,4 +1,5 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
+import { AuthorizationType } from 'aws-cdk-lib/aws-apigateway';
 
 const schema = a.schema({
   Product: a.customType({
@@ -24,9 +25,17 @@ const schema = a.schema({
         dataSource: 'productInfo',
       }),
     ),
-  search: a.query().arguments({ query: a.string().required(), limit: a.integer() }).returns(a.ref('Product').array()),
-  addProduct: a.mutation().arguments({ query: a.string().required(), limit: a.integer() }).returns(a.ref('Product'))
-});
+  search: a
+    .query()
+    .arguments({ query: a.string().required(), limit: a.integer() })
+    .returns(a.ref('Product').array())
+})
 
 export type Schema = ClientSchema<typeof schema>;
-export const data = defineData({ schema });
+export const data = defineData({ 
+  schema,
+  authorizationModes: {
+    defaultAuthorizationMode: 'apiKey',
+    apiKeyAuthorizationMode: { expiresInDays: 30 }
+  }
+});

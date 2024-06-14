@@ -7,8 +7,9 @@ import { util } from '@aws-appsync/utils';
  */
 export function request(ctx) {
   const { query } = ctx.args;
+  console.log("Calling model with query ", query);
   return {
-    resourcePath: `/model/${ctx.env.MODEL_ID}/invoke`,
+    resourcePath: `/model/${ctx.env.EMBED_MODEL_ID}/invoke`,
     method: 'POST',
     params: {
       headers: { 'Content-Type': 'application/json' },
@@ -27,6 +28,9 @@ export function response(ctx) {
     error,
     result: { statusCode, body },
   } = ctx;
+
+  
+
   if (error || !(statusCode >= 200 && statusCode < 300)) {
     return util.appendError(`Request error: ${error ?? statusCode}`);
   }

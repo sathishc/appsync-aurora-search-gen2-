@@ -5,7 +5,7 @@ import '@aws-amplify/ui-react/styles.css';
 import { Authenticator } from '@aws-amplify/ui-react';
 
 
-const client = generateClient<Schema>();
+const client = generateClient<Schema>({authMode:'apiKey'});
 
 function App() {
   // const [searchString, setSearchString] = useState("")
@@ -26,23 +26,24 @@ function App() {
     console.log(client);    
   }, []);
 
-  /*
+  
   function search() {
-    client.queries.search({query:searchString})
-  }*/
+    client.queries.search({query:"Anker"})
+  }
 
+  /*
   async function addProduct() {
     const promptString = "Generate a record for the following graphql schema. " + modelSchema
     const product = await client.mutations.addProduct({"query":promptString});
     console.log(product);
-  }
+  }*/
 
   return (
     <Authenticator>
       {() => (
     <main>
       <h1>My Products</h1>
-      <button onClick={addProduct}>Add Product</button>
+      <button onClick={search}>Add Product</button>
     
     </main>
      )}

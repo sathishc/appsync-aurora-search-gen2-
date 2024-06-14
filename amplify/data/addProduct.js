@@ -9,12 +9,16 @@ import { util } from '@aws-appsync/utils';
 export function request(ctx) {
     console.log(" Context in addProduct",ctx.args)
     const { input: values } = ctx.args;
+    
+    return ctx.args;
+    /*
     const insertStatement = insert({ table: 'product_info', values });
     
     // Generates statement:
     // INSERT INTO `persons`(`name`)
     // VALUES(:NAME)
     return createPgStatement(insertStatement)
+    */
 }
 
 /**
@@ -25,6 +29,7 @@ export function request(ctx) {
 export function response(ctx) {
   const { error, result } = ctx;
   if (error) {
+    util.appendError("Context in addProduct", "context", ctx.args);
     return util.appendError(error.message, error.type, result);
   }
 
