@@ -1,5 +1,4 @@
 import { defineBackend } from '@aws-amplify/backend';
-import { auth } from './auth/resource';
 import { data } from './data/resource';
 import * as rds from 'aws-cdk-lib/aws-rds';
 import { Stack, Fn } from 'aws-cdk-lib';
@@ -7,7 +6,6 @@ import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Code, FunctionRuntime } from 'aws-cdk-lib/aws-appsync';
 
 const backend = defineBackend({
-  auth,
   data,
 });
 
@@ -24,8 +22,8 @@ const rdsDs = backend.data.addRdsDataSource('rds', cluster, secret, 'postgres', 
 cluster.grantDataApiAccess(rdsDs);
 
 // set up bedrock
-// const EMBED_MODEL_ID = 'amazon.titan-embed-text-v2:0';
-const EMBED_MODEL_ID = 'amazon.titan-embed-text-v1';
+const EMBED_MODEL_ID = 'amazon.titan-embed-text-v2:0';
+// const EMBED_MODEL_ID = 'amazon.titan-embed-text-v1';
 const MODEL_ID = 'anthropic.claude-3-sonnet-20240229-v1:0';
 const bedrockDataSource = backend.data.addHttpDataSource('BedrockDataSource', `https://bedrock-runtime.${region}.amazonaws.com`, {
   authorizationConfig: { signingRegion: dataStack.region, signingServiceName: 'bedrock' },

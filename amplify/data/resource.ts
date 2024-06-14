@@ -1,5 +1,4 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
-import { AuthorizationType } from 'aws-cdk-lib/aws-apigateway';
 
 const schema = a.schema({
   Product: a.customType({
